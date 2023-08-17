@@ -21,7 +21,6 @@ namespace ServicePremise.database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Contract>().HasKey(sc => new { sc.PremiseId, sc.TypeEquipmentId});
         }
     }
 }

@@ -5,7 +5,7 @@ namespace ServicePremise.database.entities
     public class TypeEquipment
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Guid { get; set; }
 
         [MaxLength(30)]
         public string Code { get; set; }
@@ -16,7 +16,5 @@ namespace ServicePremise.database.entities
 
         [Required]
         public decimal Area { get; set; }
-
-        public IList<Contract> Contracts { get; set; }
     }
 }

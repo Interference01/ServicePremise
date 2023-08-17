@@ -24,28 +24,31 @@ namespace ServicePremise.Migrations
 
             modelBuilder.Entity("ServicePremise.database.entities.Contract", b =>
                 {
-                    b.Property<Guid>("PremiseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TypeEquipmentId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("EquipmentUnitsCount")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("PremiseGuid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("PremiseId", "TypeEquipmentId");
+                    b.Property<Guid>("TypeEquipmentGuid")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("TypeEquipmentId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("PremiseGuid");
+
+                    b.HasIndex("TypeEquipmentGuid");
 
                     b.ToTable("Contracts");
                 });
 
             modelBuilder.Entity("ServicePremise.database.entities.Premise", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -61,14 +64,14 @@ namespace ServicePremise.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Guid");
 
                     b.ToTable("Premises");
                 });
 
             modelBuilder.Entity("ServicePremise.database.entities.TypeEquipment", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -84,7 +87,7 @@ namespace ServicePremise.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Guid");
 
                     b.ToTable("TypesEquipment");
                 });
@@ -92,30 +95,20 @@ namespace ServicePremise.Migrations
             modelBuilder.Entity("ServicePremise.database.entities.Contract", b =>
                 {
                     b.HasOne("ServicePremise.database.entities.Premise", "Premise")
-                        .WithMany("Contracts")
-                        .HasForeignKey("PremiseId")
+                        .WithMany()
+                        .HasForeignKey("PremiseGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ServicePremise.database.entities.TypeEquipment", "TypeEquipment")
-                        .WithMany("Contracts")
-                        .HasForeignKey("TypeEquipmentId")
+                        .WithMany()
+                        .HasForeignKey("TypeEquipmentGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Premise");
 
                     b.Navigation("TypeEquipment");
-                });
-
-            modelBuilder.Entity("ServicePremise.database.entities.Premise", b =>
-                {
-                    b.Navigation("Contracts");
-                });
-
-            modelBuilder.Entity("ServicePremise.database.entities.TypeEquipment", b =>
-                {
-                    b.Navigation("Contracts");
                 });
 #pragma warning restore 612, 618
         }
