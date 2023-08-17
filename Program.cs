@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using ServicePremise.database;
+using ServicePremise.repositories;
+using ServicePremise.repositories.ports;
+
 namespace ServicePremise
 {
     public class Program
@@ -10,6 +15,13 @@ namespace ServicePremise
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddTransient<IPremiseRepository, PremiseRepository>();
+            builder.Services.AddTransient<ITypeEquipmentRepository, TypeEquipmentRepository>();
+            builder.Services.AddTransient<IContractRepository, ContractRepository>();
 
             var app = builder.Build();
 
