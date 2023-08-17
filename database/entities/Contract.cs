@@ -8,9 +8,11 @@ namespace ServicePremise.database.entities
         public Guid Id { get; set; }
 
         [Required]
+        public Guid PremiseId { get; set; }
         public Premise Premise { get; set; }
 
         [Required]
+        public Guid TypeEquipmentId { get; set; }
         public TypeEquipment TypeEquipment { get; set; }
         
         [Required]
