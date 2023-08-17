@@ -6,7 +6,7 @@ namespace ServicePremise.database.entities
     public class Premise
     {
         [Key]
-        public Guid Guid { get; set; }
+        public Guid Id { get; set; }
 
         [MaxLength(30)]
         public string Code { get; set; }

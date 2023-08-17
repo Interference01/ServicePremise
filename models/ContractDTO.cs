@@ -1,6 +1,6 @@
 ﻿namespace ServicePremise.models
 {
-    public class ContractDTO
+    public class ContractPostDTO
     {
         public Guid PremiseId { get; set; }
 
