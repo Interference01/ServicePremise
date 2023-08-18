@@ -21,7 +21,7 @@ namespace ServicePremise.Controllers
 
 
         [HttpGet("getAll")]
-        public async Task<IActionResult> GetContractList()
+        public async Task<IActionResult> GetContracts()
         {
             var contracts = await contractRepository.GetAllAsync();
 
