@@ -5,6 +5,11 @@ namespace ServicePremise.database
 {
     public class ServiceDbContext : DbContext
     {
+        public ServiceDbContext(DbContextOptions<ServiceDbContext> options)
+        : base(options)
+        {
+        }
+
         public DbSet<Premise> Premises { get; set; }
         public DbSet<TypeEquipment> TypesEquipment { get; set; }
         public DbSet<Contract> Contracts { get; set; }
