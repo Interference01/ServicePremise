@@ -2,6 +2,7 @@
 {
     public class ContractGetDTO
     {
+        public Guid ContractId { get; set; }
 
         public string PremiseName { get; set; }
 

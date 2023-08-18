@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ServicePremise.models;
 using ServicePremise.repositories.ports;
 
@@ -28,6 +27,7 @@ namespace ServicePremise.Controllers
 
             var contractsDTO = contracts.Select(x => new ContractGetDTO()
             {
+                ContractId = x.Id,
                 PremiseName = x.Premise.Name,
                 TypeEquipmentName = x.TypeEquipment.Name,
                 EquipmentUnitsCount = x.EquipmentUnitsCount,
@@ -38,16 +38,22 @@ namespace ServicePremise.Controllers
 
 
         [HttpGet("searchById")]
-        public async Task<IActionResult> GetContract(Guid id)
+        public async Task<IActionResult> GetContractsByPremise(Guid PremiseId)
         {
-            var contract = await contractRepository.FindContract(id);
+            var contracts = await contractRepository.FindContractsByPremise(PremiseId);
 
-            var contractDTO = new ContractGetDTO()
+
+            if (contracts.Count == 0)
+                return NotFound("Empty or check id");
+
+
+            var contractDTO = contracts.Select(x => new ContractGetDTO()
             {
-                PremiseName = contract.Premise.Name,
-                TypeEquipmentName = contract.TypeEquipment.Name,
-                EquipmentUnitsCount = contract.EquipmentUnitsCount,
-            };
+                ContractId = x.Id,
+                PremiseName = x.Premise.Name,
+                TypeEquipmentName = x.TypeEquipment.Name,
+                EquipmentUnitsCount = x.EquipmentUnitsCount,
+            }).ToList();
 
             return Ok(contractDTO);
         }
@@ -60,13 +66,16 @@ namespace ServicePremise.Controllers
             var typeEquipment = await equipmentRepository.GetByIdAsync(contractDTO.TypeEquipmentId);
 
 
-            if (premise == null || typeEquipment == null)
-                return NotFound("Premise or equipment not found, please check ID");
+            if (premise == null || typeEquipment == null || contractDTO.EquipmentUnitsCount <= 0) // де повинна бути перевірка на ноль та мінусове число? 
+                return NotFound("The entered data is not valid");
+
+            if (! await contractRepository.ValidateArea(premise, typeEquipment))
+                return BadRequest("The contract cannot be created because there is not enough space");
 
 
-            contractRepository.CreateContract(premise, typeEquipment, contractDTO.EquipmentUnitsCount);
+            var contract = contractRepository.CreateContract(premise, typeEquipment, contractDTO.EquipmentUnitsCount);
 
-            return Ok();
+            return CreatedAtAction("GetContractsByPremise", new { contract.Id }, contract);
         }
     }
 }

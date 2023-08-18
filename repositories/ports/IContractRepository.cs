@@ -6,8 +6,10 @@ namespace ServicePremise.repositories.ports
     {
         public Task<List<Contract>> GetAllAsync();
 
-        public Task<Contract> FindContract(Guid Id);
+        public Task<List<Contract>> FindContractsByPremise(Guid Id);
 
-        public void CreateContract(Premise premise, TypeEquipment typeEquipment, int EquipmentUnitsCount);
+        public Contract CreateContract(Premise premise, TypeEquipment typeEquipment, int EquipmentUnitsCount);
+
+        public Task<bool> ValidateArea(Premise premise, TypeEquipment typeEquipment);
     }
 }

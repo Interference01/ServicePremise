@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ServicePremise.database;
 using ServicePremise.database.entities;
-using ServicePremise.models;
 using ServicePremise.repositories.ports;
 
 namespace ServicePremise.repositories
@@ -26,26 +25,42 @@ namespace ServicePremise.repositories
             return contrats;
         }
 
-        public async Task<Contract> FindContract(Guid id)
+        public async Task<List<Contract>> FindContractsByPremise(Guid id) // Пошук всіх контрактів конкретного приміщення.
         {
             return await dbContext.Contracts
                 .Include(x => x.Premise)
                 .Include(x => x.TypeEquipment)
-                .FirstAsync(x => x.Id == id);
+                .Where(x => x.Premise.Id == id).ToListAsync();
         }
 
-        public void CreateContract(Premise premise, TypeEquipment typeEquipment, int EquipmentUnitsCount)
+        public Contract CreateContract(Premise premise, TypeEquipment typeEquipment, int EquipmentUnitsCount)
         {
             Contract contract = new Contract()
             {
                 Id = Guid.NewGuid(),
                 Premise = premise,
                 TypeEquipment = typeEquipment,
-                EquipmentUnitsCount = EquipmentUnitsCount, // додати перевірку на нуль та мінус.
+                EquipmentUnitsCount = EquipmentUnitsCount,
             };
 
             dbContext.Contracts.AddAsync(contract);
             dbContext.SaveChangesAsync();
+
+            return contract;
+        }
+
+        public async Task<bool> ValidateArea(Premise premise, TypeEquipment typeEquipment)
+        {
+            decimal areaPremise = premise.EquipmentArea;
+            decimal thisAreaEquipment = typeEquipment.Area;
+
+            var actuallyContracts = await FindContractsByPremise(premise.Id);
+            decimal sumAreaEquipment = actuallyContracts.Sum(x => x.TypeEquipment.Area * x.EquipmentUnitsCount);
+
+            if (areaPremise < (sumAreaEquipment + thisAreaEquipment))
+            return false;
+
+            return true;
         }
     }
 }
