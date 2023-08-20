@@ -10,7 +10,8 @@ namespace ServicePremise.Controllers
     {
         private readonly IPremiseRepository premiseRepository;
         private readonly ITypeEquipmentRepository equipmentRepository;
-        private IContractRepository contractRepository;
+        private readonly IContractRepository contractRepository;
+
 
         public ContractController(IPremiseRepository premiseRepository, ITypeEquipmentRepository equipmentRepository, IContractRepository contractRepository)
         {
@@ -66,7 +67,7 @@ namespace ServicePremise.Controllers
             var typeEquipment = await equipmentRepository.GetByIdAsync(contractDTO.TypeEquipmentId);
 
 
-            if (premise == null || typeEquipment == null || contractDTO.EquipmentUnitsCount <= 0) // де повинна бути перевірка на ноль та мінусове число? 
+            if (premise == null || typeEquipment == null || contractDTO.EquipmentUnitsCount <= 0)
                 return NotFound("The entered data is not valid");
 
             if (! await contractRepository.ValidateArea(premise, typeEquipment))

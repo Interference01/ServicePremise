@@ -17,7 +17,7 @@ namespace ServicePremise
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")));
+                builder.Configuration.GetConnectionString("AZURE_SQL_Connection")));
 
             builder.Services.AddTransient<IPremiseRepository, PremiseRepository>();
             builder.Services.AddTransient<ITypeEquipmentRepository, TypeEquipmentRepository>();
