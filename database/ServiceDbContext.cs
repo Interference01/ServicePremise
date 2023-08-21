@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ServicePremise.database.configuration;
 using ServicePremise.database.entities;
 
 namespace ServicePremise.database
@@ -20,6 +21,8 @@ namespace ServicePremise.database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new PremiseConfiguration());
+            modelBuilder.ApplyConfiguration(new TypeEquipmentConfiguration());
         }
     }
 }

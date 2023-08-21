@@ -14,7 +14,7 @@ namespace ServicePremise
 
 
             builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection"))
+                builder.Configuration.GetConnectionString("AZURE_SQL_Connection"))
             );
 
             builder.Services.AddScoped<IPremiseRepository, PremiseRepository>();
@@ -33,14 +33,6 @@ namespace ServicePremise
                 app.UseSwaggerUI();
             }
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider
-                    .GetRequiredService<ServiceDbContext>();
-
-                dbContext.Database.Migrate();
-            }
-
             app.UseHttpsRedirection();
 
             app.UseMiddleware<ApiKeyMiddleware>();
@@ -48,6 +40,8 @@ namespace ServicePremise
 
 
             app.MapControllers();
+
+            app.MigrateDatabase();
 
             app.Run();
         }
