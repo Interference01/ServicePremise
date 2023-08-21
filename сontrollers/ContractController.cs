@@ -70,8 +70,8 @@ namespace ServicePremise.Controllers
             if (premise == null || typeEquipment == null || contractDTO.EquipmentUnitsCount <= 0)
                 return NotFound("The entered data is not valid");
 
-            if (! await contractRepository.ValidateArea(premise, typeEquipment))
-                return BadRequest("The contract cannot be created because there is not enough space");
+            if (! await contractRepository.ValidateArea(premise, typeEquipment, contractDTO.EquipmentUnitsCount))
+                return BadRequest("Insufficient space in the premise");
 
 
             var contract = contractRepository.CreateContract(premise, typeEquipment, contractDTO.EquipmentUnitsCount);

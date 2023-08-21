@@ -11,7 +11,7 @@ namespace ServicePremise.repositories
 
         public ContractRepository(ServiceDbContext dbContext)
         {
-                this.dbContext = dbContext;
+            this.dbContext = dbContext;
         }
 
 
@@ -25,7 +25,7 @@ namespace ServicePremise.repositories
             return contrats;
         }
 
-        public async Task<List<Contract>> FindContractsByPremise(Guid id) // Пошук всіх контрактів конкретного приміщення.
+        public async Task<List<Contract>> FindContractsByPremise(Guid id) 
         {
             return await dbContext.Contracts
                 .Include(x => x.Premise)
@@ -49,18 +49,18 @@ namespace ServicePremise.repositories
             return contract;
         }
 
-        public async Task<bool> ValidateArea(Premise premise, TypeEquipment typeEquipment)
+        public async Task<bool> ValidateArea(Premise premise, TypeEquipment typeEquipment, int equipmentUnitsCount)
         {
-            decimal areaPremise = premise.EquipmentArea;
-            decimal thisAreaEquipment = typeEquipment.Area;
-
             var actuallyContracts = await FindContractsByPremise(premise.Id);
-            decimal sumAreaEquipment = actuallyContracts.Sum(x => x.TypeEquipment.Area * x.EquipmentUnitsCount);
+            decimal occupiedArea = actuallyContracts.Sum(x => x.TypeEquipment.Area * x.EquipmentUnitsCount);
 
-            if (areaPremise < (sumAreaEquipment + thisAreaEquipment))
-            return false;
+            decimal freeAreaPremise = premise.EquipmentArea - occupiedArea;
 
-            return true;
+            decimal inputSumArea = typeEquipment.Area * equipmentUnitsCount;
+
+            return freeAreaPremise >= inputSumArea;
         }
+
+
     }
 }

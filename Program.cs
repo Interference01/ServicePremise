@@ -14,7 +14,7 @@ namespace ServicePremise
 
 
             builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(
-                builder.Configuration.GetConnectionString("AZURE_SQL_Connection"))
+                builder.Configuration.GetConnectionString("DefaultConnection"))
             );
 
             builder.Services.AddScoped<IPremiseRepository, PremiseRepository>();

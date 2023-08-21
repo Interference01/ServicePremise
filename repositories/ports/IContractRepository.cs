@@ -10,6 +10,6 @@ namespace ServicePremise.repositories.ports
 
         public Contract CreateContract(Premise premise, TypeEquipment typeEquipment, int EquipmentUnitsCount);
 
-        public Task<bool> ValidateArea(Premise premise, TypeEquipment typeEquipment);
+        public Task<bool> ValidateArea(Premise premise, TypeEquipment typeEquipment, int EquipmentUnitsCount);
     }
 }
