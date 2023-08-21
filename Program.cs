@@ -3,7 +3,6 @@ using ServicePremise.database;
 using ServicePremise.middleware;
 using ServicePremise.repositories;
 using ServicePremise.repositories.ports;
-using System;
 
 namespace ServicePremise
 {
@@ -14,16 +13,17 @@ namespace ServicePremise
             var builder = WebApplication.CreateBuilder(args);
 
 
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            builder.Services.AddDbContext<ServiceDbContext>(); // options => options.UseSqlServer(
-            //builder.Configuration.GetConnectionString("AZURE_SQL_Connection"))
+            builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("AZURE_SQL_Connection"))
+            );
 
             builder.Services.AddScoped<IPremiseRepository, PremiseRepository>();
             builder.Services.AddScoped<ITypeEquipmentRepository, TypeEquipmentRepository>();
             builder.Services.AddScoped<IContractRepository, ContractRepository>();
+
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
@@ -31,14 +31,14 @@ namespace ServicePremise
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
 
-                using (var scope = app.Services.CreateScope())
-                {
-                    var dbContext = scope.ServiceProvider
-                        .GetRequiredService<ServiceDbContext>();
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider
+                    .GetRequiredService<ServiceDbContext>();
 
-                    dbContext.Database.Migrate();
-                }
+                dbContext.Database.Migrate();
             }
 
             app.UseHttpsRedirection();
