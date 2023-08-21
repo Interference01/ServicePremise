@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ServicePremise.database.configuration;
 using ServicePremise.database.entities;
 
 namespace ServicePremise.database
@@ -16,11 +17,12 @@ namespace ServicePremise.database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=tcp:server-valentain.database.windows.net,1433;Initial Catalog=ServiceDB;Persist Security Info=False;User ID=val;Password=7306310s!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new PremiseConfiguration());
+            modelBuilder.ApplyConfiguration(new TypeEquipmentConfiguration());
         }
     }
 }
