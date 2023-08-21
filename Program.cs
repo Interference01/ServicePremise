@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using ServicePremise.database;
+using ServicePremise.middleware;
+using ServicePremise.repositories;
+using ServicePremise.repositories.ports;
+
 namespace ServicePremise
 {
     public class Program
@@ -6,16 +12,21 @@ namespace ServicePremise
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+
+            builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("AZURE_SQL_Connection"))
+            );
+
+            builder.Services.AddScoped<IPremiseRepository, PremiseRepository>();
+            builder.Services.AddScoped<ITypeEquipmentRepository, TypeEquipmentRepository>();
+            builder.Services.AddScoped<IContractRepository, ContractRepository>();
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -24,10 +35,13 @@ namespace ServicePremise
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<ApiKeyMiddleware>();
             app.UseAuthorization();
 
 
             app.MapControllers();
+
+            app.MigrateDatabase();
 
             app.Run();
         }
