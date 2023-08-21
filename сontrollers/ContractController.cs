@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ServicePremise.database;
 using ServicePremise.models;
 using ServicePremise.repositories.ports;
 
@@ -70,12 +71,11 @@ namespace ServicePremise.Controllers
             if (premise == null || typeEquipment == null || contractDTO.EquipmentUnitsCount <= 0)
                 return NotFound("The entered data is not valid");
 
-            if (! await contractRepository.ValidateArea(premise, typeEquipment, contractDTO.EquipmentUnitsCount))
+            if (!await contractRepository.ValidateArea(premise, typeEquipment, contractDTO.EquipmentUnitsCount))
                 return BadRequest("Insufficient space in the premise");
 
 
             var contract = contractRepository.CreateContract(premise, typeEquipment, contractDTO.EquipmentUnitsCount);
-
             return CreatedAtAction("GetContractsByPremise", new { contract.Id }, contract);
         }
     }

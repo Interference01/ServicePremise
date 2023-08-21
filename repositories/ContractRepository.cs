@@ -60,7 +60,5 @@ namespace ServicePremise.repositories
 
             return freeAreaPremise >= inputSumArea;
         }
-
-
     }
 }
